@@ -21,8 +21,21 @@
  * @throws {Error} если массив пуст
  */
 export function searchNumber(arr, target) {
-    throw Error('method searchNumber is not implemented yet');
+    if (!arr.length) {
+        throw new Error("Массив пуст");
+    }
+    let found = false;
+    for (let i = 0; i < arr.length; i++ ) {
+        if (arr[i] === target) {
+            console.log("Найдено значение: " + target);
+            found = true;
+            break;
+        }
+    }
+    return found;
 }
+// 1 2 3 4 findMax => 20
+
 
 /**
  * Находит максимальное число в массиве.
@@ -44,7 +57,16 @@ export function searchNumber(arr, target) {
  * @throws {Error} если массив пуст
  */
 export function findMax(arr) {
-    throw Error('method findMax is not implemented yet');
+    if (!arr.length) {
+        throw new Error("Массив пуст");
+    }
+    let max = arr[0];
+    for (let num of arr) {
+        if (num > max) {
+            max = num;
+        }
+    }
+    return max;
 }
 
 /**
@@ -67,7 +89,17 @@ export function findMax(arr) {
  * @throws {Error} если массив пуст
  */
 export function findMin(arr) {
-    throw Error('method findMin is not implemented yet');
+     if (!arr.length) {
+        throw new Error("Массив пуст");
+    }
+    let min = arr[0];
+    
+    for (let i = 1; i < arr.length; i++) {
+        if (min > arr[i]) {
+            min = arr[i];
+        }
+    }
+    return min;
 }
 
 /**
@@ -343,4 +375,3 @@ export function reverseArray(arr) {
 export function removeZeros(arr) {
     throw new Error("method removeZeros is not implemented yet");
 }
-
