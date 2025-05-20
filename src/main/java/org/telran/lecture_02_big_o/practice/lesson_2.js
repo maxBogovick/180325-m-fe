@@ -9,7 +9,13 @@
  * @return {*} значение элемента массива по указанному индексу
  */
 export function getValueByIndex(arr, index) {
-  throw new Error('method getValueByIndex is not implemented yet');
+  if (!arr.length) {
+    throw Error("Массив пуст");
+  }
+  if (index < 0 || index > arr.length - 1) {
+    throw Error("Невалидный индекс массива");
+  }
+  return arr[index]; // O(1)
 }
 
 /**
@@ -28,7 +34,15 @@ export function getValueByIndex(arr, index) {
  * @return {number} количество итераций
  */
 export function calcLogarithm(n) {
-  throw Error('method calcLogarithm is not implemented yet');
+  if (n <= 0) {
+    throw Error ("Логарифм будем считать только для пололжительных чисел больше 0");
+  }
+  let count = 0;
+  while (n > 1) {
+    n = n /2;
+    count++;
+  }
+  return count;
 }
 
 /**
@@ -51,7 +65,17 @@ export function calcLogarithm(n) {
  * @return {number|string} факториал числа или сообщение об ошибке
  */
 export function factorial(n) {
-  throw Error('method factorial is not implemented yet');
+  if (n < 0) {
+    throw Error("Факторил работает с положительными числами");
+  }
+  if (n === 0 || n === 1) {
+    return 1;
+  }
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result = result * i;
+  }
+  return result; // O(n)
 }
 
 /**
@@ -133,3 +157,16 @@ export function permutation() {
   throw Error('method permutation is not implemented yet');
 }
 
+
+//console.log(" result = " + getValueByIndex([1, 2, 3, 4, 5, 6, 7], 2));
+//console.log(" result = " + getValueByIndex([1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7], 20));
+//console.log(factorial(2));
+//console.log(factorial(3));
+//console.log(factorial(4));
+//console.log(factorial(5));
+//console.log(factorial(6));
+
+console.log(calcLogarithm(16));
+console.log(calcLogarithm(1024));
+console.log(calcLogarithm(1));
+console.log(calcLogarithm(0));
