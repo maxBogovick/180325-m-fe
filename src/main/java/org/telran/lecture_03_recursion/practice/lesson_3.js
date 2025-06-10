@@ -183,22 +183,6 @@ export function findMax(arr) {
     // Верните больший из них
 }
 
-console.log(findMax([1, 2, 3, 4]));
-
-/**
- * Вычисляет base^exp (exp ≥ 0) рекурсивно.
- * @param {number} base
- * @param {number} exp — неотрицательное целое.
- * @returns {number}
- */
-export function power(base, exp) {
-    // TODO: Добавьте базовый случай
-    // Любое число в нулевой степени равно 1
-
-    // TODO: Реализуйте рекурсивный случай
-    // Умножьте base на результат power(base, exp - 1)
-}
-
 /**
  * Рекурсивно находит максимальный элемент в массиве с использованием деструктуризации
  * @param {Array<number>} arr - Массив чисел
@@ -213,4 +197,18 @@ export function findMaxWithIndex(arr, index = 0) {
 
     // TODO: Сравните текущий элемент с максимумом в остатке
     // Используйте Math.max() и верните больший элемент
+}
+
+/**
+ * Вычисляет base^exp (exp ≥ 0) рекурсивно.
+ * @param {number} base
+ * @param {number} exp — неотрицательное целое.
+ * @returns {number}
+ */
+export function power(base, exp) {
+    // TODO: Добавьте базовый случай
+    // Любое число в нулевой степени равно 1
+
+    // TODO: Реализуйте рекурсивный случай
+    // Умножьте base на результат power(base, exp - 1)
 }
