@@ -6,10 +6,14 @@
 export function splitArray(arr) {
     // Алгоритмические шаги:
     // 1. Вычислить средний индекс массива.
-    // 2. Создать левую половину, срезав от начала до середины.
-    // 3. Создать правую половину, срезав от середины до конца.
-    // 4. Вернуть массив, содержащий обе половины.
+    const midInd = Math.floor(arr.length/2);
+    const arrLeft = arr.slice(0, midInd);
+    const arrRight = arr.slice(midInd);
+    return [arrLeft, arrRight];
 }
+
+console.log(splitArray([1, 2, 3, 4, 5, 6]));
+// [1, 2, 3, 4] => [[1], [2], [3], [4]]
 
 /**
  * Рекурсивно разделяет массив на вложенные подмассивы.
@@ -19,11 +23,16 @@ export function splitArray(arr) {
 export function recursiveSplit(arr) {
     // Алгоритмические шаги:
     // 1. Если длина массива равна 1 или меньше, вернуть массив.
-    // 2. Вычислить средний индекс массива.
-    // 3. Рекурсивно разделить левую половину (от начала до середины).
-    // 4. Рекурсивно разделить правую половину (от середины до конца).
-    // 5. Вернуть массив, содержащий результаты обоих рекурсивных разделений.
+    if (arr.length <= 1) {
+        return arr;
+    }
+    const midIndex = Math.floor(arr.length/2);
+    const leftArr = recursiveSplit(arr.slice(0, midIndex));
+    const rightArr = recursiveSplit(arr.splice(midIndex));
+    return [leftArr, rightArr];
 }
+
+console.log("call recursiveSplit = ",  recursiveSplit([1, 2, 3]));
 
 /**
  * Объединяет два отсортированных массива в один отсортированный массив.
@@ -31,32 +40,50 @@ export function recursiveSplit(arr) {
  * @param {Array} right - Правый отсортированный массив.
  * @returns {Array} - Новый отсортированный массив, содержащий все элементы из обоих входных массивов.
  */
-export function merge(left, right) {
-    // Алгоритмические шаги:
-    // 1. Инициализировать пустой результирующий массив.
-    // 2. Инициализировать индексы для левого и правого массивов, начиная с 0.
-    // 3. Пока оба индекса находятся в пределах своих массивов:
-    //    a. Сравнить элементы на текущих индексах левого и правого массивов.
-    //    b. Добавить меньший элемент в результирующий массив и увеличить соответствующий индекс.
-    // 4. Добавить оставшиеся элементы из левого массива в результат.
-    // 5. Добавить оставшиеся элементы из правого массива в результат.
-    // 6. Вернуть результирующий массив.
+export function merge(left, right, extractorFn = (num) => num) {
+    const result = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (extractorFn(left[leftIndex]) < extractorFn(right[rightIndex])) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {            
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    while(leftIndex < left.length) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    while (rightIndex < right.length) {
+        result.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return result;
 }
+
+console.log("result of work merge method = " +  merge([10, 13, 15, 60], [20, 30, 40]));
 
 /**
  * Сортирует массив с использованием алгоритма сортировки слиянием.
  * @param {Array} arr - Входной массив для сортировки.
  * @returns {Array} - Новый отсортированный массив.
  */
-export function mergeSort(arr) {
-    // Алгоритмические шаги:
-    // 1. Проверить, если длина массива равна 1 или меньше; если да, вернуть массив, так как он уже отсортирован.
-    // 2. Вычислить средний индекс массива.
-    // 3. Разделить массив на левую и правую половины.
-    // 4. Рекурсивно применить mergeSort к левой половине.
-    // 5. Рекурсивно применить mergeSort к правой половине.
-    // 6. Объединить отсортированные левую и правую половины.
-    // 7. Вернуть объединенный результат.
+export function mergeSort(arr, extractorFn) {
+    if (arr.length <=1) {
+        return arr;
+    }
+
+    const midIndex = Math.floor(arr.length/2);
+    const leftArr = mergeSort(arr.slice(0, midIndex), extractorFn);
+    const rightArr = mergeSort(arr.slice(midIndex), extractorFn);
+    return merge(leftArr, rightArr, extractorFn);
 }
 
 /**
@@ -121,12 +148,27 @@ export function mergeAndSort(arr, aux, start, mid, end) {
  * @param {boolean} [desc=false] - Флаг для сортировки по убыванию.
  * @returns {Array} - Новый отсортированный массив, содержащий только отфильтрованные элементы.
  */
-export function mergeAndFilter(array, filter, desc = false) {
+
+// [20, 12, 34, 1, 4] => [4, 12, 20, 34]
+// desc asc
+export function mergeAndFilter(array, filter, extractorFn) {
     // Алгоритмические шаги:
     // 1. Инициализировать пустой массив для хранения отфильтрованных элементов.
+    let result = [];
     // 2. Пройти по каждому элементу входного массива.
-    // 3. Если элемент удовлетворяет условию фильтра, добавить его в новый массив.
-    // 4. Инициализировать временный массив для использования в сортировке слиянием.
-    // 5. Вызвать функцию merge для сортировки отфильтрованного массива.
-    // 6. Вернуть отсортированный массив.
+    for (const num of array) {
+        if (filter(num)) {
+            result.push(num);
+        }
+    }
+    return mergeSort(result, extractorFn);
 }
+
+const users = [
+    {id: 3, name: "User 1", enabled: true},
+    {id: 20, name: "User 2", enabled: true},
+    {id: 1, name: "User 3", enabled: false},
+    {id: 2, name: "User 4", enabled: true},
+];
+
+console.log(mergeAndFilter(users, (user) => true, (user) => user.name));
