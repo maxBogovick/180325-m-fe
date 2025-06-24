@@ -10,6 +10,12 @@
  * 4. Объединяется результат: sorted(less) + pivot + sorted(greater)
  */
 
+
+// [1, 2, 3, 4, 5, 6] => less = [1, 2, 3, 4, 5, 6] greater = []
+//
+// [1001, 20, 40, 43, 202, 13, 56, 345, 890, 33, 7] =>
+// less = [] greater = [] pivot = 
+
 /**
  * Разделяет массив на элементы меньше и больше/равные опорному.
  *
@@ -17,9 +23,47 @@
  * @returns {{ pivot: any, less: Array, greater: Array }}
  * Объект с полями: опорный элемент, массивы меньше и больше/равные.
  */
-export function partition(arr) {
-    // TODO: реализовать выбор pivot, проход по массиву и формирование less и greater
+
+class PartiotionResult {
+    constructor(pivot, lessArray, greaterArray) {
+        this.pivot = pivot;
+        this.less = lessArray;
+        this.greater = greaterArray;
+    }
 }
+
+// (prod) => prod.price;
+// 10 => 10
+export function partition(arr = [], extrFn = data => data) {
+    const pivotIndex = Math.floor((arr.length - 1) / 2);
+    const pivot = arr[pivotIndex];
+
+    const lessArray = [];
+    const greaterArray = [];
+
+    for (let i = 0; i < arr.length; i++) {
+        if (pivotIndex === i) {
+            continue;
+        }
+        //(prod) => prod.price
+        if (extrFn(pivot) > extrFn(arr[i])) {
+            lessArray.push(arr[i]);
+        } else {
+            greaterArray.push(arr[i]);
+        }
+
+    }
+
+    //const result = new PartiotionResult(pivot, lessArray, greaterArray);
+
+    return {
+        pivot: pivot,
+        less: lessArray,
+        greater: greaterArray,
+    };
+}
+
+//console.log("Result of working function partition = ",partition([1001, 20, 40, 43, 202, 48, 56, 345, 890, 33, 7]));
 
 /**
  * Выполняет сортировку массива с помощью базового QuickSort.
@@ -28,13 +72,24 @@ export function partition(arr) {
  * @returns {Array} Отсортированный массив.
  */
 export function quickSort(arr) {
-    // TODO:
-    // - Если длина массива <= 1, вернуть его как есть.
-    // - Иначе выполнить partition.
-    // - Рекурсивно отсортировать less и greater.
-    // - Вернуть объединённый результат.
+
+    if (arr.length <= 1) {
+        return arr;
+    }
+
+    const partitionResult = partition(arr);
+
+    const leftPart = quickSort(partitionResult.less);
+
+    const rightPart = quickSort(partitionResult.greater);
+
+    const result = leftPart.concat(partitionResult.pivot, rightPart);
+
+    return result;
 }
 
+
+console.log("Result of work quick sort function = ", quickSort([45, 2, 7, 5, 10, 1, 3]));
 
 /**
  * Обменивает два элемента массива местами.
@@ -44,8 +99,9 @@ export function quickSort(arr) {
  * @param {number} j - Индекс второго элемента.
  */
 export function swap(arr, i, j) {
-    // Обменяй значения arr[i] и arr[j] местами.
-    // Подсказка: можно использовать временную переменную.
+    const temp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = temp;
 }
 
 /**
@@ -54,18 +110,42 @@ export function swap(arr, i, j) {
  * @param {any[]} arr - Массив, который нужно разделить.
  * @param {number} low - Левая граница подмассива.
  * @param {number} high - Правая граница подмассива.
- * @param {(a: any, b: any) => number} compareFn - Функция сравнения, аналогичная той, что используется в Array.prototype.sort().
+ 
  * @returns {number} Индекс, разделяющий две части массива.
  */
-export function hoarePartition(arr, low, high, compareFn) {
-    // 1. Выбери опорный элемент (pivot), например, элемент в середине массива.
-    // 2. Установи два указателя: i — в начало (low), j — в конец (high).
-    // 3. Пока true:
-    //    - сдвигай i вправо, пока arr[i] < pivot (используя compareFn)
-    //    - сдвигай j влево, пока arr[j] > pivot
-    //    - если i >= j, верни j — это граница разбиения
-    //    - иначе, обменяй arr[i] и arr[j], затем увеличь i и уменьши j
+
+//*  @param {(a: any, b: any) => number} compareFn - Функция сравнения, аналогичная той, что используется в Array.prototype.sort().
+export function hoarePartition(arr, lowIndex, highIndex) {
+
+    const pivotIndx = Math.floor((lowIndex + highIndex )/2);
+    const pivot = arr[pivotIndx];
+
+    let leftIndex = lowIndex;
+    let rightIndex = highIndex;
+
+    while (true) {
+
+        
+        while (arr[leftIndex] < pivot) {
+            leftIndex++;
+        }
+        while (arr[rightIndex] > pivot) {
+            rightIndex--;
+        }       
+
+        if (leftIndex >= rightIndex) {
+            return rightIndex;
+        }
+        
+        swap(arr, leftIndex, rightIndex);
+        leftIndex++;
+        rightIndex--;
+    }
 }
+
+const arr = [10, 29, 15, 2, 30, 1];
+console.log("Result of work hoare partition = ", hoarePartition(arr, 0, arr.length-1));
+console.log("Result after partition = ", arr);
 
 /**
  * Быстрая сортировка с использованием разбиения Хоара.
@@ -75,11 +155,21 @@ export function hoarePartition(arr, low, high, compareFn) {
  * @param {number} high - Правая граница.
  */
 export function quickSortHoare(arr, low, high) {
-    // TODO:
-    // - Проверить условие выхода (low < high)
-    // - Выполнить hoarePartition и получить pivot
-    // - Рекурсивно вызвать quickSortHoare для левой и правой части
+
+    if (low < high) {
+        console.log("Low index = " + low);
+        console.log(" highIndex = " + high);
+        const pivotIndex = hoarePartition(arr, low, high);
+        console.log("Pivot = " + pivotIndex);
+
+        quickSortHoare(arr, low, pivotIndex);
+        quickSortHoare(arr, pivotIndex+1, high);
+    }
 }
+
+const arr2 = [10, 29, 15, 2, 30, 1];
+quickSortHoare(arr2, 0, arr2.length-1);
+console.log("Result after sort = ", arr2);
 
 /**
  * Быстро находит k-й наименьший элемент в массиве, используя QuickSelect.
@@ -104,13 +194,13 @@ export function quickSelect(arr, k, low = 0, high = arr.length - 1, compareFn) {
 // ПРИМЕР: Нахождение топ-N самых популярных статей
 // =================================================================
 const articles = [
-  { title: "Статья A", views: 1500 },
-  { title: "Статья B", views: 900 },
-  { title: "Статья C", views: 4500 },
-  { title: "Статья D", views: 500 },
-  { title: "Статья E", views: 3100 },
-  { title: "Статья F", views: 1800 },
-  { title: "Статья G", views: 4000 },
+    { title: "Статья A", views: 1500 },
+    { title: "Статья B", views: 900 },
+    { title: "Статья C", views: 4500 },
+    { title: "Статья D", views: 500 },
+    { title: "Статья E", views: 3100 },
+    { title: "Статья F", views: 1800 },
+    { title: "Статья G", views: 4000 },
 ];
 
 /**
@@ -129,19 +219,19 @@ const articles = [
  * @returns {Array<Object>} Массив топ-N самых просматриваемых статей.
  */
 export function finderTopNArticles(articles, topN = 5) {
-  // 1. Скопировать массив, чтобы не изменять оригинал
+    // 1. Скопировать массив, чтобы не изменять оригинал
 
-  // 2. Определить функцию сравнения по просмотрам
+    // 2. Определить функцию сравнения по просмотрам
 
-  // 3. Если статей больше N:
-  //    3.1 Найти индекс (длину - N)
-  //    3.2 Получить пороговую статью через quickSelect
-  //    3.3 Определить пороговое значение просмотров
-  //    3.4 Отфильтровать статьи, у которых просмотры ≥ порога
-  //    3.5 Отсортировать результат и вернуть
+    // 3. Если статей больше N:
+    //    3.1 Найти индекс (длину - N)
+    //    3.2 Получить пороговую статью через quickSelect
+    //    3.3 Определить пороговое значение просмотров
+    //    3.4 Отфильтровать статьи, у которых просмотры ≥ порога
+    //    3.5 Отсортировать результат и вернуть
 
-  // 4. Если статей меньше или равно N:
-  //    4.1 Отсортировать весь массив по убыванию просмотров и вернуть
+    // 4. Если статей меньше или равно N:
+    //    4.1 Отсортировать весь массив по убыванию просмотров и вернуть
 }
 
 
@@ -159,6 +249,10 @@ const products = [
     { name: 'Webcam', price: 90, category: 'Electronics' },
     { name: 'Speaker', price: 200, category: 'Electronics' }
 ];
+
+
+
+//console.log("Result of work partiotion function by products = ", partition(products, prod => prod.price));
 
 // =================================================================
 // ПРИМЕР: Нахождение топ-N самых больших файлов
