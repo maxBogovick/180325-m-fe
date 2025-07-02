@@ -2,13 +2,15 @@
  * Класс, представляющий структуру данных стек, реализованную на основе массива.
  * Элементы добавляются и удаляются с вершины стека (LIFO - Last In, First Out).
  */
+
+
 class ArrayStack {
     /**
      * Создает экземпляр ArrayStack.
      * Инициализирует пустой массив для хранения элементов стека.
      */
     constructor() {
-        // TODO: Инициализировать пустой массив для хранения элементов стека
+        this.array = [];
     }
 
     /**
@@ -16,8 +18,7 @@ class ArrayStack {
      * @param {*} element - Элемент, который нужно добавить в стек.
      */
     push(element) {
-        // TODO: Добавить элемент в конец массива
-        // TODO: Вывести сообщение в консоль, что элемент добавлен, например: "Добавлено: <element>"
+        this.array.push(element);
     }
 
     /**
@@ -25,10 +26,11 @@ class ArrayStack {
      * @returns {*} Удаленный элемент или null, если стек пуст.
      */
     pop() {
-        // TODO: Проверить, пуст ли стек; если да, вывести в консоль "Стек пуст" и вернуть null
-        // TODO: Удалить и сохранить последний элемент массива
-        // TODO: Вывести сообщение в консоль, что элемент удален, например: "Удалено: <element>"
-        // TODO: Вернуть удаленный элемент
+        if (this.isEmpty()) {
+            return null;
+        }
+        const removedData = this.array.pop();
+        return removedData;
     }
 
     /**
@@ -36,8 +38,10 @@ class ArrayStack {
      * @returns {*} Верхний элемент стека или null, если стек пуст.
      */
     peek() {
-        // TODO: Проверить, пуст ли стек; если да, вернуть null
-        // TODO: Вернуть последний элемент массива без его удаления
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.array[this.array.length-1];
     }
 
     /**
@@ -45,7 +49,7 @@ class ArrayStack {
      * @returns {boolean} True, если стек пуст, иначе false.
      */
     isEmpty() {
-        // TODO: Вернуть true, если длина массива равна 0, иначе false
+        return this.array.length === 0;
     }
 
     /**
@@ -53,15 +57,14 @@ class ArrayStack {
      * @returns {number} Количество элементов в стеке.
      */
     size() {
-        // TODO: Вернуть длину массива
+        return this.array.length;
     }
 
     /**
      * Очищает стек, удаляя все элементы.
      */
     clear() {
-        // TODO: Очистить массив, установив его в пустой массив
-        // TODO: Вывести сообщение в консоль: "Стек очищен"
+        this.array = [];
     }
 
     /**
@@ -73,6 +76,14 @@ class ArrayStack {
         // TODO: Для каждого элемента вызвать callback, передав элемент и индекс (индекс должен начинаться с 0 для вершины)
     }
 }
+
+const stack = new ArrayStack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.pop());
 
 /**
  * Класс для управления историей навигации с помощью стека.
