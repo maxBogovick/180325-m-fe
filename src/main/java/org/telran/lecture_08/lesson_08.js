@@ -8,7 +8,7 @@ class ArrayQueue {
      * Инициализирует пустой массив для хранения элементов очереди.
      */
     constructor() {
-        // TODO: Инициализировать пустой массив для хранения элементов очереди
+        this.items = [];
     }
 
     /**
@@ -16,19 +16,19 @@ class ArrayQueue {
      * @param {*} element - Элемент, который нужно добавить в очередь.
      */
     enqueue(element) {
-        // TODO: Добавить элемент в конец массива
-        // TODO: Вывести сообщение в консоль, что элемент добавлен, например: "Добавлен в очередь: <element>"
+        this.items.push(element);
     }
+
 
     /**
      * Удаляет и возвращает элемент из начала очереди.
      * @returns {*} Удаленный элемент из очереди или null, если очередь пуста.
      */
     dequeue() {
-        // TODO: Проверить, пуста ли очередь; если да, вывести в консоль "Очередь пуста! Невозможно выполнить dequeue()" и вернуть null
-        // TODO: Удалить и сохранить первый элемент массива (учтите, что array.shift() имеет сложность O(n))
-        // TODO: Вывести сообщение в консоль, что элемент удален, например: "Удален из очереди: <element>"
-        // TODO: Вернуть удаленный элемент
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items.shift();
     }
 
     /**
@@ -36,8 +36,10 @@ class ArrayQueue {
      * @returns {*} Первый элемент очереди или null, если очередь пуста.
      */
     front() {
-        // TODO: Проверить, пуста ли очередь; если да, вернуть null
-        // TODO: Вернуть первый элемент массива без его удаления
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items[0];
     }
 
     /**
@@ -45,8 +47,10 @@ class ArrayQueue {
      * @returns {*} Последний элемент очереди или null, если очередь пуста.
      */
     rear() {
-        // TODO: Проверить, пуста ли очередь; если да, вернуть null
-        // TODO: Вернуть последний элемент массива без его удаления
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items[this.items.length-1];
     }
 
     /**
@@ -54,7 +58,7 @@ class ArrayQueue {
      * @returns {boolean} True, если очередь пуста, иначе false.
      */
     isEmpty() {
-        // TODO: Вернуть true, если длина массива равна 0, иначе false
+        return this.items.length === 0;
     }
 
     /**
@@ -62,24 +66,14 @@ class ArrayQueue {
      * @returns {number} Количество элементов в очереди.
      */
     size() {
-        // TODO: Вернуть длину массива
+        return this.items.length;
     }
 
     /**
      * Очищает очередь, удаляя все элементы.
      */
     clear() {
-        // TODO: Очистить массив, установив его в пустой массив
-        // TODO: Вывести сообщение в консоль: "Очередь очищена"
-    }
-
-    /**
-     * Выводит содержимое очереди в консоль.
-     */
-    display() {
-        // TODO: Проверить, пуста ли очередь; если да, вывести в консоль "Очередь пуста" и завершить выполнение
-        // TODO: Вывести в консоль сообщение "Содержимое очереди (начало -> конец):"
-        // TODO: Вывести элементы массива, соединенные строкой " <- "
+        this.items = [];
     }
 
     /**
@@ -87,10 +81,22 @@ class ArrayQueue {
      * @param {function} callback - Функция, которая будет вызвана для каждого элемента. Принимает элемент, индекс и массив.
      */
     forEach(callback) {
-        // TODO: Пройтись по всем элементам массива
-        // TODO: Вызвать callback для каждого элемента, передав элемент, его индекс и массив
+        for (let i = 0; i < length; i++) {
+            callback(this.items[i]);
+        }
     }
 }
+/*
+const queue = new ArrayQueue();
+queue.enqueue("Patient 1");
+queue.enqueue("Patient 2");
+queue.enqueue("Patient 3");
+
+console.log("Call next = ", queue.dequeue());
+console.log("Call next = ", queue.dequeue());
+console.log("Call next = ", queue.dequeue());
+*/
+
 
 /**
  * Класс, представляющий узел односвязного списка.
@@ -101,10 +107,24 @@ class Node {
      * @param {*} data - Данные, которые будет содержать узел.
      */
     constructor(data) {
-        // TODO: Установить данные узла (data)
-        // TODO: Установить указатель на следующий узел (next) как null
+        this.value = data;
+        this.next = null;
     }
 }
+
+const node1 = new Node("User 1");
+console.log("node 1 = ",node1);
+
+const node2 = new Node("User 2");
+console.log("node 2 = ",node2);
+
+node1.next = node2;
+
+const node3 = new Node("User 3");
+console.log("node 2 = ",node2);
+node2.next = node3;
+
+console.log(node1);
 
 /**
  * Класс, представляющий структуру данных очередь, реализованную на основе односвязного списка.
@@ -113,13 +133,11 @@ class Node {
 class LinkedListQueue {
     /**
      * Создает экземпляр LinkedListQueue.
-     * @param {number} [maxSize=Infinity] - Максимально допустимый размер очереди.
      */
-    constructor(maxSize = Infinity) {
-        // TODO: Инициализировать начало очереди (head) как null
-        // TODO: Инициализировать конец очереди (tail) как null
-        // TODO: Инициализировать текущий размер (size) как 0
-        // TODO: Установить максимальный размер очереди (maxSize) из параметра
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
     }
 
     /**
@@ -128,14 +146,17 @@ class LinkedListQueue {
      * @returns {boolean} True, если элемент успешно добавлен, иначе false (если очередь переполнена).
      */
     enqueue(data) {
-        // TODO: Проверить, достигнут ли максимальный размер очереди; если да, вывести в консоль "Очередь переполнена" и вернуть false
-        // TODO: Создать новый узел с переданным значением data (используйте класс Node)
-        // TODO: Если очередь не пуста (tail существует), установить next текущего tail на новый узел
-        // TODO: Если очередь пуста (head не существует), установить head на новый узел
-        // TODO: Установить tail на новый узел
-        // TODO: Увеличить размер очереди (size) на 1
-        // TODO: Вывести сообщение в консоль, что элемент добавлен, например: "Добавлен: <data>"
-        // TODO: Вернуть true
+
+        const node = new Node(data);
+        if (this.isEmpty()) {
+            this.head = node;
+            this.tail = node;
+        } else {
+            this.tail.next = node;
+            this.tail = node;
+        }
+        this.size++;
+        return this;
     }
 
     /**
