@@ -112,19 +112,16 @@ class Node {
     }
 }
 
-const node1 = new Node("User 1");
-console.log("node 1 = ",node1);
+const arraayNumbers = [1, 2, 3, 4, 5];
 
-const node2 = new Node("User 2");
-console.log("node 2 = ",node2);
+let node = new Node(1);
+node.next = new Node(2);
+node.next.next = new Node(3);
+node.next.next.next = new Node(4);
 
-node1.next = node2;
+//console.log(JSON.stringify(node));
 
-const node3 = new Node("User 3");
-console.log("node 2 = ",node2);
-node2.next = node3;
 
-console.log(node1);
 
 /**
  * Класс, представляющий структуру данных очередь, реализованную на основе односвязного списка.
@@ -165,12 +162,25 @@ class LinkedListQueue {
      */
     dequeue() {
         // TODO: Проверить, пуста ли очередь; если да, вывести в консоль "Очередь пуста" и вернуть null
+        if (this.isEmpty()) {
+            console.log("Очередь пустая");
+            return null;            
+        }
         // TODO: Сохранить данные (data) из узла head
+        const currentNode = this.head;
         // TODO: Переместить head на следующий узел (head.next)
+        this.head = this.head.next;
         // TODO: Уменьшить размер очереди (size) на 1
+        currentNode.next = null;
+        this.size--;
         // TODO: Если очередь стала пустой (size === 0), установить tail в null
+        if (this.size === 0) {
+            this.tail = null;
+        }
         // TODO: Вывести сообщение в консоль, что элемент удален, например: "Удален: <data>"
+        console.log(`Удален из очереди: ${JSON.stringify(currentNode)}`);
         // TODO: Вернуть сохраненные данные
+        return currentNode.value;
     }
 
     /**
@@ -179,6 +189,7 @@ class LinkedListQueue {
      */
     isEmpty() {
         // TODO: Вернуть true, если head равен null, иначе false
+        return this.head === null;
     }
 
     /**
@@ -187,6 +198,7 @@ class LinkedListQueue {
      */
     getSize() {
         // TODO: Вернуть текущий размер очереди (size)
+        return this.size;
     }
 
     /**
@@ -204,12 +216,43 @@ class LinkedListQueue {
      * @param {function} callback - Функция, которая будет вызвана для каждого элемента. Принимает данные элемента и индекс.
      */
     forEach(callback) {
+        let node = this.head;
         // TODO: Начать с узла head
         // TODO: Пройтись по всем узлам списка, пока текущий узел существует
-        // TODO: Для каждого узла вызвать callback, передав данные узла (data) и текущий индекс
-        // TODO: Перейти к следующему узлу и увеличить индекс
+        while(node) {
+            callback(node.value);
+            node = node.next;
+        }
     }
 }
+
+let list = new LinkedListQueue();
+list.enqueue(1).enqueue(2).enqueue(3);
+
+let array = [];
+
+function pushToArray(dataNode) {
+    dataNode = dataNode + 3;
+    array.push(dataNode);
+}
+
+const callback = dataNode => {
+    dataNode = dataNode + 3;
+    array.push(dataNode);
+}
+//list.forEach(pushToArray);
+
+list.forEach(data => {
+    data = data + 3;
+    array.push(data);
+});
+
+
+console.log("function array with data is = ", array);
+
+array = [];
+list.forEach(pushToArray);
+console.log("Callback array with data is = ", array);
 
 /**
  * Класс RequestManager - очередь последовательной обработки запросов
@@ -267,11 +310,27 @@ for (let index = 0; index < 10; index++) {
             .catch(err => console.log(err));
         console.log("added to queue request with id " + index);
 }*/
-/*
+
 for (let index = 0; index < 10; index++) {
     fetch(`https://jsonplaceholder.typicode.com/todos/${index}`)
             .then(data => data.json())
             .then(data => console.log(`Запрос ${index} результат:`, data))
             .catch(err => console.log(err));
-        console.log("added to queue request with id " + index);
-}*/
+        console.log(`added to queue request with index ${index} and url = https://jsonplaceholder.typicode.com/todos/${index}` );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
