@@ -266,9 +266,12 @@ for (let index = 0; index < 10; index++) {
             .then(data => console.log(`Запрос ${index} результат:`, data))
             .catch(err => console.log(err));
         console.log("added to queue request with id " + index);
-    console.log("added to queue request with id " + index);    
+}*/
+/*
+for (let index = 0; index < 10; index++) {
     fetch(`https://jsonplaceholder.typicode.com/todos/${index}`)
-    .then(data => data.json())
-        .then(data => console.log(`Запрос ${index} результат:`, data))
-        .catch(err => console.log(err));
+            .then(data => data.json())
+            .then(data => console.log(`Запрос ${index} результат:`, data))
+            .catch(err => console.log(err));
+        console.log("added to queue request with id " + index);
 }*/
