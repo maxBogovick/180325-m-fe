@@ -1,11 +1,13 @@
+import { defaultPrinter } from "../utils/common_util.js";
+
 /**
  * Узел бинарного дерева поиска
  */
 class TreeNode {
   constructor(value) {
-    // Сохраняем значение узла
-    // Ссылка на левое поддерево
-    // Ссылка на правое поддерево
+    this.value = value
+    this.left = null;
+    this.right = null;
   }
 }
 
@@ -14,16 +16,20 @@ class TreeNode {
  * Поддерживает операции вставки, поиска, удаления, обхода
  */
 class BinarySearchTree {
-  // корень дерева
-  // количество узлов
+    #root=null;
+    #size=0;
+
+    getRoot() {
+        return this.#root;
+    }
 
   /**
    * Вставляет новое значение в дерево
    */
+  //value = 10
   insert(value) {
-    // 1. Сравнить текущий размер дерева
-    // 2. Вызвать рекурсивную вставку начиная с корня
-    // 3. Если размер увеличился — значит узел был вставлен
+    this.#root = this.#insertNode(this.#root, value);
+    return this;
   }
 
   /**
@@ -31,10 +37,20 @@ class BinarySearchTree {
    */
   #insertNode(node, value) {
     // 1. Если текущая позиция пустая — создать новый узел
+    const newNode = new TreeNode(value);
+    if (node === null) {
+        this.#size++;
+        return newNode;
+    }
+
     // 2. Если значение меньше текущего узла — рекурсивно вставить влево
-    // 3. Если значение больше текущего узла — рекурсивно вставить вправо
-    // 4. Если равно — ничего не делать (дубликаты запрещены)
-    // 5. Вернуть узел
+    if (value < node.value) {
+        node.left = this.#insertNode(node.left, value);
+    } else if (value > node.value) {
+        node.right = this.#insertNode(node.right, value);
+    }
+    
+    return node;
   }
 
   /**
@@ -230,3 +246,19 @@ class BinarySearchTree {
   }
 
 }
+
+
+const binarySearchTree = new BinarySearchTree();
+binarySearchTree.insert(5);
+const printer = defaultPrinter();
+//printer.printTree(binarySearchTree.getRoot());
+binarySearchTree.insert(6);
+binarySearchTree.insert(10);
+binarySearchTree.insert(4);
+binarySearchTree.insert(2);
+binarySearchTree.insert(3);
+binarySearchTree.insert(9);
+binarySearchTree.insert(3.5);
+printer.printTree(binarySearchTree.getRoot());
+
+console.log(JSON.stringify(binarySearchTree.getRoot()));
