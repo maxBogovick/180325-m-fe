@@ -16,12 +16,12 @@ class TreeNode {
  * Поддерживает операции вставки, поиска, удаления, обхода
  */
 class BinarySearchTree {
-    #root=null;
-    #size=0;
+  #root = null;
+  #size = 0;
 
-    getRoot() {
-        return this.#root;
-    }
+  getRoot() {
+    return this.#root;
+  }
 
   /**
    * Вставляет новое значение в дерево
@@ -39,17 +39,17 @@ class BinarySearchTree {
     // 1. Если текущая позиция пустая — создать новый узел
     const newNode = new TreeNode(value);
     if (node === null) {
-        this.#size++;
-        return newNode;
+      this.#size++;
+      return newNode;
     }
 
     // 2. Если значение меньше текущего узла — рекурсивно вставить влево
     if (value < node.value) {
-        node.left = this.#insertNode(node.left, value);
+      node.left = this.#insertNode(node.left, value);
     } else if (value > node.value) {
-        node.right = this.#insertNode(node.right, value);
+      node.right = this.#insertNode(node.right, value);
     }
-    
+
     return node;
   }
 
@@ -100,10 +100,32 @@ class BinarySearchTree {
   /**
    * Удаляет значение из дерева
    */
+  // 1
   remove(value) {
     // 1. Сохранить текущий размер
+    this.#root = this.#removeNode(this.#root, value);
     // 2. Вызвать рекурсивное удаление начиная с корня
     // 3. Если размер уменьшился — значит удаление прошло успешно
+  }
+
+  #findMinNode(node) {
+    if (node === null) {
+      return null;
+    }
+    while (node.left !== null) {
+      node = node.left;
+    }
+    return node;
+  }
+
+  #findMaxNode(node) {
+    if (node === null) {
+      return null;
+    }
+    while (node.right != null) {
+      node = node.right;
+    }
+    return node;
   }
 
   /**
@@ -111,14 +133,37 @@ class BinarySearchTree {
    */
   #removeNode(node, value) {
     // 1. Если текущий узел пустой — вернуть null
-    // 2. Если значение меньше — рекурсивно удалять влево
-    // 3. Если значение больше — рекурсивно удалять вправо
-    // 4. Если совпало — обработать три случая:
-    //    а) узел без детей → вернуть null
-    //    б) узел с одним ребёнком → вернуть ребёнка
-    //    в) узел с двумя детьми → найти минимальный в правом поддереве,
-    //       заменить значение и удалить преемника
-    // 5. Вернуть обновлённый узел
+    if (node === null) {
+      return null;
+    }
+
+    if (value < node.value) {
+      node.left = this.#removeNode(node.left, value);
+    } else if (value > node.value) {
+      node.right = this.#removeNode(node.right, value);
+    }
+    else { // value === node.value
+      if (node.left === null && node.right === null) {
+        this.#size--;
+        return null;
+      }
+
+      if (node.right === null && node.left !== null) {
+        this.#size--;
+        return node.left;
+      }
+
+      if (node.right !== null && node.left === null) {
+        this.#size--;
+        return node.right;
+      }
+
+      const minNode = this.#findMinNode(node.right);
+      node.value = minNode.value;
+      node.right = this.#removeNode(node.right, minNode.value);
+      return node;
+    }
+    return node;
   }
 
   /**
@@ -142,15 +187,18 @@ class BinarySearchTree {
     // 1. Создать пустой массив
     // 2. Вызвать рекурсивный обход начиная с корня
     // 3. Вернуть массив
+    const result = [];
+    this.#inOrderTraversal(this.#root, result);
+    return result;
   }
 
   /**
    * Обход pre-order (корень — слева — справа)
    */
   preOrder() {
-    // 1. Создать пустой массив
-    // 2. Вызвать рекурсивный обход начиная с корня
-    // 3. Вернуть массив
+    const result = [];
+    this.#preOrderTraversal(this.#root, result);
+    return result;
   }
 
   /**
@@ -166,20 +214,24 @@ class BinarySearchTree {
    * Рекурсивный обход in-order
    */
   #inOrderTraversal(node, result) {
-    // 1. Если узел пустой — завершить
-    // 2. Рекурсивно обойти левое поддерево
-    // 3. Добавить значение текущего узла
-    // 4. Рекурсивно обойти правое поддерево
+    if (node === null) {
+      return;
+    }
+    this.#inOrderTraversal(node.left, result);
+    result.push(node.value);
+    this.#inOrderTraversal(node.right, result);
   }
 
   /**
    * Рекурсивный обход pre-order
    */
   #preOrderTraversal(node, result) {
-    // 1. Если узел пустой — завершить
-    // 2. Добавить значение текущего узла
-    // 3. Рекурсивно обойти левое поддерево
-    // 4. Рекурсивно обойти правое поддерево
+    if (node === null) {
+      return;
+    }
+    result.push(node.value);
+    this.#inOrderTraversal(node.left, result);    
+    this.#inOrderTraversal(node.right, result);
   }
 
   /**
@@ -259,6 +311,18 @@ binarySearchTree.insert(2);
 binarySearchTree.insert(3);
 binarySearchTree.insert(9);
 binarySearchTree.insert(3.5);
+binarySearchTree.insert(7);
+binarySearchTree.insert(11);
+binarySearchTree.insert(10.5);
+binarySearchTree.insert(12);
 printer.printTree(binarySearchTree.getRoot());
 
-console.log(JSON.stringify(binarySearchTree.getRoot()));
+//console.log(JSON.stringify(binarySearchTree.getRoot()));
+
+binarySearchTree.remove(10);
+console.log("result of remove 10");
+printer.printTree(binarySearchTree.getRoot());
+
+console.log("result = " + binarySearchTree.inOrder());
+
+console.log("result preorder = " + binarySearchTree.preOrder());
